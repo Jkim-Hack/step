@@ -1,9 +1,100 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+body {
+  margin: 0;
+  padding: 0;
 }
 
-#greeting-container {
-  margin-top: 20px;
+p {
+  font-family: Roboto;
+  font-size: 1.4rem;
+  color: black;
+  padding: 20px;
+  margin: 1em;
+  line-height: 1.6em;
+  letter-spacing: .010em;
+  font-weight: 400;
 }
+
+h3 {
+  font-family: Roboto;
+  font-size: 4rem;
+  color: black;
+  letter-spacing: .010em;
+  font-weight: 400;
+  padding-left: 20px;
+}
+
+.one {
+  background: linear-gradient(90deg, rgba(32,56,84,1) 0%, rgba(19,33,50,1) 66%, rgba(14,25,39,1) 100%);
+  width: 100%;
+  height: 50vh;
+}
+
+.two {
+  width: 100%;
+  height: 30vh;
+  background: #e9edf0;
+}
+
+.three { 
+  width: 100%;
+  height: 50vh;
+}
+
+.imageSection {
+  float: left;
+  width: 40%;
+  padding: 2vh;
+}
+
+#imageOne {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  border-radius: 50%;
+  box-shadow: 0px 0px 15px #203855;
+}
+
+.nameSection {
+  text-align: center;
+  float: right;
+  width: 40%;
+  padding: 20px;
+}
+
+#name {
+  font-family: Roboto;
+  font-size: 100px;
+  letter-spacing: .01em;
+  color: #fff;
+}
+
+#aboutMe {
+  font-family: sans-serif;
+  font-size: 50px;
+  letter-spacing: .01em;
+  color: #fff;
+}
+
+#imageSectionTwo { 
+  float: right;
+  width: 38%;
+  height: 100%;
+}
+
+#columnImages {
+  display: block;
+  border-radius: 10%;
+  box-shadow: 0px 0px 15px #203855;
+}
+
+.column {
+  float: left;
+  padding: 25px;
+}
+
+#descriptionSection {    
+  float: left;
+  width: 40%;
+  height: 100%;
+  display: block;
+} 
