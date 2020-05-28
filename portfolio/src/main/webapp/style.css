@@ -3,10 +3,17 @@ body {
   padding: 0;
 }
 
+a {
+  font-size: 1rem;
+  letter-spacing: .010em;
+  font-weight: 400;
+  font-family: Roboto;
+}
+
 p {
   font-family: Roboto;
   font-size: 1.4rem;
-  color: black;
+  color: #232323;
   padding: 20px;
   margin: 1em;
   line-height: 1.6em;
@@ -16,11 +23,11 @@ p {
 
 h3 {
   font-family: Roboto;
-  font-size: 4rem;
+  font-size: 2rem;
   color: black;
   letter-spacing: .010em;
   font-weight: 400;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 
 .one {
@@ -97,4 +104,73 @@ h3 {
   width: 40%;
   height: 100%;
   display: block;
-} 
+}
+
+#description {
+  font-family: Roboto;
+  font-size: 1.4rem;
+  color: #1e1f1f;
+  padding: 20px;
+  margin: 1em;
+  line-height: 1.6em;
+  letter-spacing: .010em;
+  font-weight: 400;
+}
+
+#projectSection {
+  text-align: left;
+  float: right;
+  width: 100%;
+  height: 80vh;
+}
+
+#projects {         
+  font-family: Roboto;
+  font-size: 3.5rem;
+  letter-spacing: .01em;
+  font-weight: 400;
+  color: #232323;
+  margin-top: auto;
+  padding-top: 40px;
+  padding-left: 40px;
+}
+
+#wecycle {
+  float: left;
+  height: 30vh;
+  width: 30vw;
+  padding-left: 60px; 
+}
+
+#pigeon {
+  float: left;
+  height: 30vh;
+  width: 30vw;
+  padding-left: 60px; 
+}
+
+#projectImages {
+  float: right;
+  width: 40%;
+  margin-top: 0px;
+}
+
+.imageRow {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.imageColumn {
+  flex: 50%;
+  padding: 0 4px;
+}
+
+.imageColumn img {
+  margin-top: 8px;
+  vertical-align: middle;
+}
+
+#imageIcon {
+  padding-left: 1000px;
+}
