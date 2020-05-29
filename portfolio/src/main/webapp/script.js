@@ -18,5 +18,5 @@
 async function getHelloName() {
   const response = await fetch('/data');
   const message = await response.text();
-  document.getElementById('greeting-container').innerText = message;
+  document.getElementById('greeting-container').innerHTML = message;
 }
