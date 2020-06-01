@@ -20,3 +20,10 @@ async function getHelloName() {
   const message = await response.text();
   document.getElementById('greeting-container').innerHTML = message;
 }
+
+async function getCommentMessages() {
+  const response = fetch('/data');
+  const json = await response.json();
+  console.log(json);
+}
+
