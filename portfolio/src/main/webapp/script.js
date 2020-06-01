@@ -24,7 +24,7 @@ async function getHelloName() {
 /**
  * Gets comment responses from the server.
  */
-async function getCommentMessages() {
+async function getAllComments() {
   let commentsList = new Array();
   const response = await fetch('/data');
   await response.json().then(comments => {
