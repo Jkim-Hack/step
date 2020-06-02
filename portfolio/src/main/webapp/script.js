@@ -36,7 +36,7 @@ async function getRandomComment() {
   if(length < 1) return;
   
   let comment = commentsList[getRandomInteger(0, length-1)];
-  document.getElementById('greeting-container').innerText = comment ;
+  document.getElementById('greeting-container').innerText = comment;
 }
 
 function getRandomInteger(min, max) {
@@ -44,3 +44,21 @@ function getRandomInteger(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
+
+
+/**
+ * Lists every comment the user has inputed
+ */
+async function listAllComments() {
+    let commentsList = await getCommentMessages();
+    let length = commentsList.length;
+
+    if(length < 1) return;
+
+    var currentHTML = "";
+    for(const comment of commentsList) {
+        let listElement = "<li>" + comment + "</li>";
+        currentHTML += listElement;
+    }
+    document.getElementById('comments-list-container').innerHTML = currentHTML;
+} 
