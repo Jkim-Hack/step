@@ -41,6 +41,9 @@ async function getCommentMessages() {
 async function getRandomComment() {
   let commentsList = await getCommentMessages();
   let length = commentsList.length;
+
+  if(length == 0) return;
+  
   let comment = commentsList[getRandomInteger(0, length-1)];
   document.getElementById('greeting-container').innerText = comment;
 }
