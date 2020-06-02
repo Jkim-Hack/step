@@ -15,18 +15,19 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import java.util.ArrayList;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public static final String TEXTINPUT = "text-input";
-public static final String DEFAULTVALUE = "";
-
 /** Servlet that returns some example content. */ 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+
+  public static final String TEXTINPUT = "text-input";
+  public static final String DEFAULTVALUE = "";
 
   private ArrayList<String> comments;
   
@@ -37,9 +38,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello John!</h1>");
- 
     String json = getJson(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
@@ -57,9 +55,7 @@ public class DataServlet extends HttpServlet {
     String comment = getParameter(request, TEXTINPUT, DEFAULTVALUE);
     comments.add(comment);
 
-    //Output the comment as a list element
-    response.setContentType("text/html");
-    response.getWriter().println("<li>" + comment + "<li>");
+    response.sendRedirect("/greeting.html");
   }
 
   /**
@@ -67,7 +63,7 @@ public class DataServlet extends HttpServlet {
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
-  private String getParameter(HttpServletResponse request, String name, String defaultValue){
+  private String getParameter(HttpServletRequest request, String name, String defaultValue){
     String value = request.getParameter(name);
     if(value == null) {
       return defaultValue;
