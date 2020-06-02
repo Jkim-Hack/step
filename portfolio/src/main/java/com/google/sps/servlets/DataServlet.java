@@ -43,7 +43,7 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  private String getJson(Object object) {
+  private String getJSONString(Object object) {
     Gson gson = new Gson();
     String json = gson.toJson(object);
     return json;
