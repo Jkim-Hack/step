@@ -20,3 +20,33 @@ async function getHelloName() {
   const message = await response.text();
   document.getElementById('greeting-container').innerHTML = message;
 }
+
+/**
+ * Gets comment responses from the server.
+ */
+async function getAllComments() {
+  let commentsList = new Array();
+  const response = await fetch('/data');
+  await response.json().then(comments => {
+    for(const comment of comments) {
+      commentsList.push(comment);
+    }
+  })
+  return commentsList;
+}
+
+/**
+ * Gets a random comment response from the server.
+ */
+async function getRandomComment() {
+  let commentsList = await getCommentMessages();
+  let length = commentsList.length;
+  let comment = commentsList[getRandomInteger(0, length-1)];
+  document.getElementById('greeting-container').innerText = comment;
+}
+
+function getRandomInteger(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; 
+}
