@@ -70,11 +70,10 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get input from user
     String commentInput = getParameter(request, TEXTINPUT, DEFAULTVALUE);
-    comments.add(comment);
     long timestamp = System.currentTimeMillis();
 
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("rawText", comment);
+    commentEntity.setProperty("rawText", commentInput);
     commentEntity.setProperty("timestamp", timestamp);
     
     datastore.put(commentEntity);
