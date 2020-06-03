@@ -30,7 +30,7 @@ async function getAllComments() {
  * Gets a random comment response from the server.
  */
 async function getRandomComment() {
-  let commentsList = await getCommentMessages();
+  let commentsList = await getAllComments();
   let length = commentsList.length;
 
   if(length < 1) return;
@@ -50,11 +50,11 @@ function getRandomInteger(min, max) {
  * Lists every comment the user has inputed
  */
 async function listAllComments() {
-    let commentsList = await getCommentMessages();
+    let commentsList = await getAllComments();
     let length = commentsList.length;
 
     if(length < 1) return;
-
+    
     var currentHTML = "";
     for(const comment of commentsList) {
         let listElement = "<li>" + comment + "</li>";
