@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -89,7 +90,7 @@ public class DataServlet extends HttpServlet {
     }
     
     // Get how many comments the user wants.
-    String commentCountString = request.getParameter(request, COMMENTCOUNT, DEFAULTVALUE);
+    String commentCountString = getParameter(request, COMMENTCOUNT, DEFAULTVALUE);
 
     // Error check integer parsing. If not a number, change to default
     try {
