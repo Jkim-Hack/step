@@ -43,7 +43,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String json = getJson(comments);
+    String json = getJSONString(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -63,7 +63,7 @@ public class DataServlet extends HttpServlet {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("rawText", comment);
 
-    datastore.put(taskEntity);
+    datastore.put(commentEntity);
 
     response.sendRedirect("/greeting.html");
   }
