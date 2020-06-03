@@ -34,32 +34,40 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   public static final String TEXTINPUT = "text-input";
+  public static final String COMMENTCOUNT = "comment-count";
   public static final String DEFAULTVALUE = "";
 
   private List<String> comments;
   private DatastoreService datastore;
+  private int commentCount;
 
   @Override
   public void init() {
+    // Initialize datastore, comment memory, and comment count.
     datastore = DatastoreServiceFactory.getDatastoreService();
     comments = new ArrayList<>(); 
+    commentCount = 3;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     comments.clear();
+    
+    // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    for(Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       String comment = (String)entity.getProperty("rawText");
       comments.add(comment);
     }
 
+    // Send json of queried data to front end.
     String json = getJSONString(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
+  /** Change object to a json string. */
   private String getJSONString(Object object) {
     Gson gson = new Gson();
     String json = gson.toJson(object);
@@ -67,23 +75,36 @@ public class DataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get input from user
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    // Get input from user.
     String commentInput = getParameter(request, TEXTINPUT, DEFAULTVALUE);
-    comments.add(comment);
     long timestamp = System.currentTimeMillis();
 
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("rawText", comment);
-    commentEntity.setProperty("timestamp", timestamp);
+    // Check if the comment is empty and if not put comment into datastore.
+    if (commentInput.length() > 0) {
+      Entity commentEntity = new Entity("Comment");
+      commentEntity.setProperty("rawText", comment);
+      commentEntity.setProperty("timestamp", timestamp);
+      datastore.put(commentEntity);
+    }
     
-    datastore.put(commentEntity);
+    // Get how many comments the user wants.
+    String commentCountString = request.getParameter(request, COMMENTCOUNT, DEFAULTVALUE);
 
+    // Error check integer parsing. If not a number, change to default
+    try {
+      commentCount = Integer.parseInt(commentCountString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + commentCount);
+      commentCount = 3;
+    }
+
+    // Redirect to greeting page.
     response.sendRedirect("/greeting.html");
   }
 
   /**
-   * Code segment taken from TextProcessor in the walkthrough
+   * Code segment taken from TextProcessor in the walkthrough.
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
@@ -94,6 +115,4 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   } 
-
-
 }
