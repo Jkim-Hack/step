@@ -83,7 +83,7 @@ public class DataServlet extends HttpServlet {
     // Check if the comment is empty and if not put comment into datastore.
     if (commentInput.length() > 0) {
       Entity commentEntity = new Entity("Comment");
-      commentEntity.setProperty("rawText", comment);
+      commentEntity.setProperty("rawText", commentInput);
       commentEntity.setProperty("timestamp", timestamp);
       datastore.put(commentEntity);
     }
