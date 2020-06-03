@@ -22,17 +22,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns some example content. */ 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  public static final String TEXTINPUT = "text-input";
+  public static final String DEFAULTVALUE = "";
+
+  private ArrayList<String> comments;
+  
+  @Override
+  public void init() {
+    comments = new ArrayList<>(); 
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> comments = new ArrayList<>();
-    comments.add("Hello! This is great!");
-    comments.add("Welcome to the website!!");
-    comments.add("Is this your first time?");
-    
     String json = getJson(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
@@ -43,5 +48,27 @@ public class DataServlet extends HttpServlet {
     String json = gson.toJson(object);
     return json;
   }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get input from user
+    String commentInput = getParameter(request, TEXTINPUT, DEFAULTVALUE);
+    comments.add(comment);
+
+    response.sendRedirect("/greeting.html");
+  }
+
+  /**
+   * Code segment taken from TextProcessor in the walkthrough
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue){
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  } 
 
 }
