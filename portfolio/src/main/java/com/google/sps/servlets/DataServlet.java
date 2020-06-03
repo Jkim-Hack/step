@@ -32,7 +32,7 @@ public class DataServlet extends HttpServlet {
   public static final String TEXTINPUT = "text-input";
   public static final String DEFAULTVALUE = "";
 
-  private ArrayList<String> comments;
+  private List<String> comments;
   private DatastoreService datastore;
 
   @Override
@@ -43,6 +43,12 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for(Entity entity : results.asIterable()) {
+      String comment = entity.getProperty("rawText");
+      comments.add(comment);
+    }
     String json = getJSONString(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
@@ -59,10 +65,12 @@ public class DataServlet extends HttpServlet {
     //Get input from user
     String comment = getParameter(request, TEXTINPUT, DEFAULTVALUE);
     comments.add(comment);
+    long timestamp = System.currenttimeMillis();
 
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("rawText", comment);
-
+    commentEntity.setProperty("timestamp", timestamp);
+    
     datastore.put(commentEntity);
 
     response.sendRedirect("/greeting.html");
@@ -80,5 +88,6 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   } 
+
 
 }
