@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import static com.google.sps.other.Constants.*;
+
 import com.google.gson.Gson;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,16 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. */ 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-  public static final String TEXTINPUT = "text-input";
-  public static final String COMMENTCOUNT = "comment-count";
-  public static final String DEFAULTVALUE = "";
-  
-  public static final int DEFAULTCOMMENTCOUNT = 3;
-  
-  public static final String COMMENTPATH = "Comment";
-  public static final String RAWTEXTPROPERTY = "rawText";
-  public static final String TIMESTAMPPROPERTY = "timestamp";
 
   private List<String> comments;
   public DatastoreService datastore;
@@ -64,6 +56,7 @@ public class DataServlet extends HttpServlet {
     Query query = new Query(COMMENTPATH).addSort(TIMESTAMPPROPERTY, SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
+      // Get each comment and add to memory
       String comment = (String)entity.getProperty("rawText");
       comments.add(comment);
     }

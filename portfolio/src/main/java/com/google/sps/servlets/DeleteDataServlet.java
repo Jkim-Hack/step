@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import static com.google.sps.other.Constants.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -42,9 +44,10 @@ public class DeleteDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
     // Get "Comment" query from datastore and delete every entity
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(COMMENTPATH).addSort(TIMESTAMPPROPERTY, SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
+      // Delete comment from server
       datastore.delete(entity.getKey());
     }
   }
