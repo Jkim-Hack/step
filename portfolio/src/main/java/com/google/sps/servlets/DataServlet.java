@@ -45,7 +45,7 @@ public class DataServlet extends HttpServlet {
   public static final String TIMESTAMPPROPERTY = "timestamp";
 
   private List<String> comments;
-  private DatastoreService datastore;
+  public DatastoreService datastore;
   private int commentCount;
 
   @Override

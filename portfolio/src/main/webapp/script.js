@@ -45,9 +45,8 @@ function getRandomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
 
-
 /**
- * Lists every comment the user has inputed
+ * Lists every comment the user has inputed.
  */
 async function listAllComments() {
     let commentsList = await getAllComments();
@@ -61,4 +60,18 @@ async function listAllComments() {
         currentHTML += listElement;
     }
     document.getElementById('comments-list-container').innerHTML = currentHTML;
-} 
+}
+
+/**
+ * Deletes every comment.
+ */
+async function deleteAllComments() { 
+  // Wait for response
+  const response = await fetch('/delete-data', {method: 'POST'});
+
+  // Get request the empty json
+  listAllComments();
+
+  // Redirect to greeting.html
+  window.location.href = "/greeting.html";
+}
