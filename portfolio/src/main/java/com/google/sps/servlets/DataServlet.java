@@ -39,7 +39,7 @@ public class DataServlet extends HttpServlet {
   public static final String DEFAULTVALUE = "";
 
   private List<String> comments;
-  private DatastoreService datastore;
+  public DatastoreService datastore;
   private int commentCount;
 
   @Override

@@ -14,10 +14,16 @@
 
 package com.google.sps.servlets;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +41,15 @@ public class DeleteDataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-    Entity allComments = new Entity("Comments");
-    Key key = allComments.getKey();
-    datastore.delete(employeeKey);
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
+    System.out.println("asdasds");  
+    // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      System.out.println(entity.getProperty("rawText"));  
+      datastore.delete(entity.getKey());
+    }
 
     response.sendRedirect("/greeting.html");
   }
