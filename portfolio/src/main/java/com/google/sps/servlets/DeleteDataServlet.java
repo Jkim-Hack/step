@@ -16,8 +16,6 @@ package com.google.sps.servlets;
 
 import static com.google.sps.other.Constants.*;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.IOException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
