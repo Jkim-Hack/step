@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,32 +35,46 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   public static final String TEXTINPUT = "text-input";
+  public static final String COMMENTCOUNT = "comment-count";
   public static final String DEFAULTVALUE = "";
+  
+  public static final int DEFAULTCOMMENTCOUNT = 3;
+  
+  public static final String COMMENTPATH = "Comment";
+  public static final String RAWTEXTPROPERTY = "rawText";
+  public static final String TIMESTAMPPROPERTY = "timestamp";
 
   private List<String> comments;
   private DatastoreService datastore;
+  private int commentCount;
 
   @Override
   public void init() {
+    // Initialize datastore, comment memory, and comment count.
     datastore = DatastoreServiceFactory.getDatastoreService();
     comments = new ArrayList<>(); 
+    commentCount = DEFAULTCOMMENTCOUNT;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     comments.clear();
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    
+    // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
+    Query query = new Query(COMMENTPATH).addSort(TIMESTAMPPROPERTY, SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    for(Entity entity : results.asIterable()) {
+    for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       String comment = (String)entity.getProperty("rawText");
       comments.add(comment);
     }
 
+    // Send json of queried data to front end.
     String json = getJSONString(comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
+  /** Change object to a json string. */
   private String getJSONString(Object object) {
     Gson gson = new Gson();
     String json = gson.toJson(object);
@@ -67,22 +82,36 @@ public class DataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get input from user
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    // Get input from user.
     String commentInput = getParameter(request, TEXTINPUT, DEFAULTVALUE);
     long timestamp = System.currentTimeMillis();
 
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("rawText", commentInput);
-    commentEntity.setProperty("timestamp", timestamp);
+    // Check if the comment is empty and if not put comment into datastore.
+    if (commentInput.length() > 0) {
+      Entity commentEntity = new Entity(COMMENTPATH);
+      commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
+      commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
+      datastore.put(commentEntity);
+    }
     
-    datastore.put(commentEntity);
+    // Get how many comments the user wants.
+    String commentCountString = getParameter(request, COMMENTCOUNT, DEFAULTVALUE);
 
+    // Error check integer parsing. If not a number, change to default
+    try {
+      commentCount = Integer.parseInt(commentCountString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + commentCount);
+      commentCount = DEFAULTCOMMENTCOUNT;
+    }
+
+    // Redirect to greeting page.
     response.sendRedirect("/greeting.html");
   }
 
   /**
-   * Code segment taken from TextProcessor in the walkthrough
+   * Code segment taken from TextProcessor in the walkthrough.
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
@@ -93,6 +122,4 @@ public class DataServlet extends HttpServlet {
     }
     return value;
   } 
-
-
 }
