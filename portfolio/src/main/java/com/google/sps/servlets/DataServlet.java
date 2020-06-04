@@ -37,6 +37,12 @@ public class DataServlet extends HttpServlet {
   public static final String TEXTINPUT = "text-input";
   public static final String COMMENTCOUNT = "comment-count";
   public static final String DEFAULTVALUE = "";
+  
+  public static final int DEFAULTCOMMENTCOUNT = 3;
+  
+  public static final String COMMENTPATH = "Comment";
+  public static final String RAWTEXTPROPERTY = "rawText";
+  public static final String TIMESTAMPPROPERTY = "timestamp";
 
   private List<String> comments;
   private DatastoreService datastore;
@@ -47,7 +53,7 @@ public class DataServlet extends HttpServlet {
     // Initialize datastore, comment memory, and comment count.
     datastore = DatastoreServiceFactory.getDatastoreService();
     comments = new ArrayList<>(); 
-    commentCount = 3;
+    commentCount = DEFAULTCOMMENTCOUNT;
   }
 
   @Override
@@ -55,7 +61,7 @@ public class DataServlet extends HttpServlet {
     comments.clear();
     
     // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(COMMENTPATH).addSort(TIMESTAMPPROPERTY, SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       String comment = (String)entity.getProperty("rawText");
@@ -83,9 +89,9 @@ public class DataServlet extends HttpServlet {
 
     // Check if the comment is empty and if not put comment into datastore.
     if (commentInput.length() > 0) {
-      Entity commentEntity = new Entity("Comment");
-      commentEntity.setProperty("rawText", commentInput);
-      commentEntity.setProperty("timestamp", timestamp);
+      Entity commentEntity = new Entity(COMMENTPATH);
+      commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
+      commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
       datastore.put(commentEntity);
     }
     
@@ -97,7 +103,7 @@ public class DataServlet extends HttpServlet {
       commentCount = Integer.parseInt(commentCountString);
     } catch (NumberFormatException e) {
       System.err.println("Could not convert to int: " + commentCount);
-      commentCount = 3;
+      commentCount = DEFAULTCOMMENTCOUNT;
     }
 
     // Redirect to greeting page.
