@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. */ 
 @WebServlet("/delete-data")
 public class DeleteDataServlet extends HttpServlet {
 
@@ -42,13 +41,11 @@ public class DeleteDataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
-    // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
+    // Get "Comment" query from datastore and delete every entity
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-      System.out.println(entity.getProperty("rawText"));  
       datastore.delete(entity.getKey());
     }
-    
   }
 }

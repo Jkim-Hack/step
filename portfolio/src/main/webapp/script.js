@@ -46,7 +46,7 @@ function getRandomInteger(min, max) {
 }
 
 /**
- * Lists every comment the user has inputed
+ * Lists every comment the user has inputed.
  */
 async function listAllComments() {
     let commentsList = await getAllComments();
@@ -62,7 +62,16 @@ async function listAllComments() {
     document.getElementById('comments-list-container').innerHTML = currentHTML;
 }
 
+/**
+ * Deletes every comment.
+ */
 async function deleteAllComments() { 
+  // Wait for response
   const response = await fetch('/delete-data', {method: 'POST'});
+
+  // Get request the empty json
   listAllComments();
+
+  // Redirect to greeting.html
+  window.location.href = "/greeting.html";
 }
