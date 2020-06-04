@@ -45,7 +45,6 @@ function getRandomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
 
-
 /**
  * Lists every comment the user has inputed
  */
@@ -61,4 +60,9 @@ async function listAllComments() {
         currentHTML += listElement;
     }
     document.getElementById('comments-list-container').innerHTML = currentHTML;
-} 
+}
+
+async function deleteAllComments() { 
+  const response = await fetch('/delete-data', {method: 'POST'});
+  listAllComments();
+}

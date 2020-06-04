@@ -42,7 +42,6 @@ public class DeleteDataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
-    System.out.println("asdasds");  
     // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
@@ -50,7 +49,6 @@ public class DeleteDataServlet extends HttpServlet {
       System.out.println(entity.getProperty("rawText"));  
       datastore.delete(entity.getKey());
     }
-
-    response.sendRedirect("/greeting.html");
+    
   }
 }
