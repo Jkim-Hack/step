@@ -40,6 +40,14 @@ p {
   max-width: 30%;
   height: auto;
   background: white;
+  position: relative;
+  animation-name: load-comments;
+  animation-duration: 3s;
+}
+
+@keyframes load-comments {
+  0%   { opacity: 0.0; top: 100vh; }
+  100% { opacity: 1.0; top: 0px; }
 }
 
 #new-comment-box {
