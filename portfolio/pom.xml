@@ -46,7 +46,7 @@
         <configuration>
           <deploy.projectId>johnykim-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
-	    </configuration>
+	</configuration>
       </plugin>
     </plugins>
   </build>
