@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -12,7 +16,7 @@ a {
 
 p {
   font-family: Roboto;
-  font-size: 1.4rem;
+  font-size: .9vw;
   color: #232323;
   padding: 20px;
   margin: 1em;
@@ -23,7 +27,7 @@ p {
 
 h3 {
   font-family: Roboto;
-  font-size: 2rem;
+  font-size: 1.4vw;
   color: black;
   letter-spacing: .010em;
   font-weight: 400;
@@ -59,6 +63,8 @@ h3 {
   margin-right: auto; 
   border-radius: 50%;
   box-shadow: 0px 0px 15px #203855;
+  max-width: 50%;
+  height: auto;
 }
 
 .nameSection {
@@ -70,33 +76,42 @@ h3 {
 
 #name {
   font-family: Roboto;
-  font-size: 100px;
+  font-size: 3.5vw;
   letter-spacing: .01em;
   color: #fff;
 }
 
 #aboutMe {
   font-family: sans-serif;
-  font-size: 50px;
+  font-size: 2vw;
   letter-spacing: .01em;
   color: #fff;
 }
 
-#imageSectionTwo { 
+#imageSectionTwo {
   float: right;
-  width: 38%;
-  height: 100%;
+  margin-top: auto;
+  width: 34%;
+}
+
+#imageSectionTwo::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 #columnImages {
-  display: block;
   border-radius: 10%;
   box-shadow: 0px 0px 15px #203855;
+  max-width: 100%;
+  height: auto;
 }
 
 .column {
   float: left;
-  padding: 25px;
+  width: 33.33%;
+  padding-top: 10px;
+  padding-right: 30px;
 }
 
 #descriptionSection {    
@@ -108,7 +123,7 @@ h3 {
 
 #description {
   font-family: Roboto;
-  font-size: 1.4rem;
+  font-size: .9vw;
   color: #1e1f1f;
   padding: 20px;
   margin: 1em;
@@ -126,7 +141,7 @@ h3 {
 
 #projects {         
   font-family: Roboto;
-  font-size: 3.5rem;
+  font-size: 1.9vw;
   letter-spacing: .01em;
   font-weight: 400;
   color: #232323;
@@ -143,10 +158,11 @@ h3 {
 }
 
 #pigeon {
-  float: left;
+  float: bottom;
   height: 30vh;
   width: 30vw;
   padding-left: 60px; 
+  padding-top: 30vh; 
 }
 
 #projectImages {
@@ -173,4 +189,25 @@ h3 {
 
 #imageIcon {
   padding-left: 1000px;
+}
+
+.comments {
+  float: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 8vh;
+  border: 3px solid white;
+}
+
+#comments {
+  border-radius: 10px;
+  border: 1px solid #808080;
+  font-family: Roboto;
+  text-align: center;
+  font-size: .8vw;
+  width: 25vw;
+  height: 4.5vh;
+  color: #a9a9a9;
+  background: white;
 }

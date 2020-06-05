@@ -45,8 +45,8 @@ async function listAllComments() {
     // Put each comment into a list element
     var currentHTML = "";
     for(const comment of commentsList) {
-        let listElement = "<li>" + comment + "</li>";
-        currentHTML += listElement;
+      let listElement = "<div id=\"comment\">" + "<p>" + comment + "</p>" + "</div>";
+      currentHTML += listElement;
     }
 
     // Put each list element into the container

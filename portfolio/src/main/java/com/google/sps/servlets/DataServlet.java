@@ -57,7 +57,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       // Get each comment and add to memory
-      String comment = (String)entity.getProperty("rawText");
+      String comment = (String)entity.getProperty(RAWTEXTPROPERTY);
       comments.add(comment);
     }
 
