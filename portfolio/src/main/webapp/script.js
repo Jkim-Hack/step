@@ -59,10 +59,14 @@ async function listAllComments() {
 async function deleteAllComments() { 
   // Wait for response
   const response = await fetch('/delete-data', {method: 'POST'});
+}
 
-  // Get request the empty json
-  listAllComments();
-
-  // Redirect to greeting.html
+function redirectToGreeting() {
   window.location.href = "/greeting.html";
 }
+
+async function handlePurgeCommentsClick() {
+  deleteAllComments();
+  redirectToGreeting();
+}
+
