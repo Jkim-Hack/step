@@ -17,48 +17,56 @@
  */
 async function getAllComments() {
   let commentsList = new Array();
+
+  // Wait for server response in data servlet
   const response = await fetch('/data');
   await response.json().then(comments => {
     for(const comment of comments) {
+      // Add each comment into list
       commentsList.push(comment);
     }
   })
+
+  // Return generated list
   return commentsList;
 }
 
 /**
- * Gets a random comment response from the server.
- */
-async function getRandomComment() {
-  let commentsList = await getAllComments();
-  let length = commentsList.length;
-
-  if(length < 1) return;
-  
-  let comment = commentsList[getRandomInteger(0, length-1)];
-  document.getElementById('greeting-container').innerText = comment;
-}
-
-function getRandomInteger(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; 
-}
-
-
-/**
- * Lists every comment the user has inputed
+ * Lists every comment the user has inputed.
  */
 async function listAllComments() {
+    // Get all the comments and put into a list
     let commentsList = await getAllComments();
     let length = commentsList.length;
 
+    // Cant display less than 1 comment
     if(length < 1) return;
     
+    // Put each comment into a list element
     var currentHTML = "";
     for(const comment of commentsList) {
         let listElement = "<li>" + comment + "</li>";
         currentHTML += listElement;
     }
+
+    // Put each list element into the container
     document.getElementById('comments-list-container').innerHTML = currentHTML;
-} 
+}
+
+/**
+ * Deletes every comment.
+ */
+async function deleteAllComments() { 
+  // Wait for response
+  const response = await fetch('/delete-data', {method: 'POST'});
+}
+
+function redirectToGreeting() {
+  window.location.href = "/greeting.html";
+}
+
+async function handlePurgeCommentsClick() {
+  deleteAllComments();
+  redirectToGreeting();
+}
+
