@@ -3,25 +3,26 @@
      <head>
        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
        <title>Greeting</title>
-       <link rel="stylesheet" href="style.css">
+       <link rel="stylesheet" href="greeting-style.css">
        <script src="script.js"></script>
      </head>
      <body onload="listAllComments()">
        <div id="content">
-	 <h1>Comments</h1>
-       </div>
-       <div id="comments">
-         <form action="/data" method="POST">
-	   <p>Enter your comment!</p>
-	   <input name="text-input">
-	   <p>How many comments would you like to see?</p>
-	   <input type="number" name="comment-count" value="3">
-	   <br><br>
-	   <input type="submit"/>
-	   <br><br>
-         </form>
-	 <button onclick="handlePurgeCommentsClick()">Purge All Comments</button>
-         <ul id="comments-list-container"></ul>
+         <div id="comments">
+	   <form action="/data" method="POST" autocomplete="off">
+	     <textarea id="new-comment-box" name="text-input" placeholder="Write a comment..."></textarea>
+	     <p style="text-align: center;">How many comments would you like to see?</p>
+	     <div id="center">
+	       <input id="comment-amount" type="number" name="comment-count" value="3">
+	     </div>
+	     <br><br>
+	     <div id="center">
+	       <input id="submit" type="submit">
+	       <button id="purge-comments" onclick="handlePurgeCommentsClick()">Purge All Comments</button>
+	     </div>
+           </form>
+         </div>
+         <div id="comments-list-container"></div>
        </div>
      </body>
    </html>

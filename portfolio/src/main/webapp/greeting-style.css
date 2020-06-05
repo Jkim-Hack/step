@@ -1,0 +1,120 @@
+body {
+  margin: 0;
+  margin-top: 2%;
+  padding: 0;
+  background: #f7f7f7;
+}
+
+a {
+  font-size: 1rem;
+  letter-spacing: .010em;
+  font-weight: 400;
+  font-family: Roboto;
+}
+
+p {
+  font-family: Roboto;
+  font-size: .8vw;
+  color: #232323;
+  padding: 20px;
+  margin: 1em;
+  line-height: 1.6em;
+  letter-spacing: .010em;
+  font-weight: 400;
+}
+
+#comments {
+  height: 30vh;
+}
+
+#comments-list-container {
+  height: 100vh;
+  padding: 20px;
+}
+
+#comment {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  box-shadow: 0px 0px 3px #a9a9a9;
+  max-width: 30%;
+  height: auto;
+  background: white;
+  position: relative;
+  animation-name: load-comments;
+  animation-duration: 3s;
+}
+
+@keyframes load-comments {
+  0%   { opacity: 0.0; top: 100vh; }
+  100% { opacity: 1.0; top: 0px; }
+}
+
+#new-comment-box {
+  font-family: Roboto;
+  font-size: .8vw;
+  color: #232323;
+  padding: 15px;
+  line-height: 1.6em;
+  letter-spacing: .010em;
+  font-weight: 400;
+  transition: 0.5s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  box-shadow: 0px 0px 3px #a9a9a9;
+  width: 90%;
+  max-width: 30%;
+  height: 3vh;
+  background: white;
+  border: 0px;
+  outline: none;
+  align: top;
+  resize: none;
+}
+
+#new-comment-box:focus {
+  height: 10vh;
+  transition: 0.5s;
+}
+
+#center {
+  text-align: center;
+}
+
+#comment-amount {
+  padding: 2px;
+  text-align: center;
+  width: 2%; 
+  font-size: .8vw;
+  font-family: Roboto;
+  box-shadow: 0px 0px 3px #a9a9a9;
+  outline: none;
+  border: 0px;
+}
+
+#submit {
+  border-radius: 10px;
+  border: 1px solid #50C878;
+  font-family: Roboto;
+  text-align: center;
+  font-size: .8vw;
+  width: 4vw;
+  height: 3.7vh;
+  color: #50C878;
+  background: white;
+  outline: none;
+}
+
+#purge-comments {
+  border-radius: 10px;
+  border: 1px solid #ED2939;
+  font-family: Roboto;
+  text-align: center;
+  font-size: .8vw;
+  width: 8vw;
+  height: 3.7vh;
+  color: #ED2939;
+  background: white;
+  outline: none;
+}

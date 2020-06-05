@@ -21,7 +21,7 @@ async function getAllComments() {
   // Wait for server response in data servlet
   const response = await fetch('/data');
   await response.json().then(comments => {
-    for(const comment of comments) {
+    for(var comment of comments) {
       // Add each comment into list
       commentsList.push(comment);
     }
@@ -44,9 +44,15 @@ async function listAllComments() {
     
     // Put each comment into a list element
     var currentHTML = "";
-    for(const comment of commentsList) {
-        let listElement = "<li>" + comment + "</li>";
-        currentHTML += listElement;
+    for (var comment of commentsList) {
+      
+      // Check for html injection
+      while (comment.includes("<") || comment.includes(">")) {
+        comment = comment.replace(/</, "&lt;").replace(/>/, "&gt;");
+      } 
+      
+      let listElement = "<div id=\"comment\">" + "<p>" + comment + "</p>" + "</div>";
+      currentHTML += listElement;
     }
 
     // Put each list element into the container
