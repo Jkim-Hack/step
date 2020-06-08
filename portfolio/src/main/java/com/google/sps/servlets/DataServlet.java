@@ -64,7 +64,9 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = this.datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       // Get each comment and add to memory
-      Comment comment = CommentBuilder(entity).build();
+      Comment comment = CommentBuilder()
+	.withEntity(entity)
+	.build();
       this.comments.add(comment);
     }
 
@@ -101,7 +103,7 @@ public class DataServlet extends HttpServlet {
     }
 
     // Redirect to greeting page.
-    response.sendRedirect("/greeting.html");
+    response.sendRedirect(GREETING_URL);
   }
 
   /**

@@ -30,7 +30,7 @@ public class CommentBuilder {
     this.timeStamp = System.currentTimeMillis();
   }
 
-  public CommentBuilder.withEntity(Entity entity) {
+  public CommentBuilder withEntity(Entity entity) {
     this.email = (String)entity.getProperty(EMAILPROPERTY);
     this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY);
     this.timeStamp = (long)entity.getProperty(TIMESTAMPPROPERTY);
