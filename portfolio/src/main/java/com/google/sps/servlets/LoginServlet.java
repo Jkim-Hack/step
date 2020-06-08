@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
 
     // Set default to the greeting page
     String loginUrl = "/greeting.html";
-    if(!this.userService.isUserLoggedIn()) {
+    if (!this.userService.isUserLoggedIn()) {
       // Change redirect page to the login page
       String urlToRedirectAfterLogin = "/greeting.html";
       loginUrl = this.userService.createLoginURL(urlToRedirectAfterLogin);
