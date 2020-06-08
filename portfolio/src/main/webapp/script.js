@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const greeting_url = "/greeting.html";
+
 /**
  * Gets comment responses from the server.
  */
@@ -73,7 +75,7 @@ function redirectTo(link) {
 
 async function handlePurgeCommentsClick() {
   deleteAllComments();
-  redirectTo("/greeting.html");
+  redirectTo(greeting_url);
 }
 
 async function requestLoginAndRedirectToNextPage() {
