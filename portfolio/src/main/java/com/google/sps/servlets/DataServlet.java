@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import static com.google.sps.other.Constants.*;
+import static com.google.sps.other.Common.*;
 
 import com.google.gson.Gson;
 import java.util.List;
@@ -32,50 +33,43 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. */ 
+/** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
   private List<String> comments;
-  public DatastoreService datastore;
+  private DatastoreService datastore;
   private int commentCount;
 
   @Override
   public void init() {
     // Initialize datastore, comment memory, and comment count.
-    datastore = DatastoreServiceFactory.getDatastoreService();
-    comments = new ArrayList<>(); 
-    commentCount = DEFAULTCOMMENTCOUNT;
+    this.datastore = DatastoreServiceFactory.getDatastoreService();
+    this.comments = new ArrayList<>();
+    this.commentCount = DEFAULTCOMMENTCOUNT;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    comments.clear();
-    
+    this.comments.clear();
+
     // Get "Comment" query from datastore and add only the commentCount amount of comments to memory.
     Query query = new Query(COMMENTPATH).addSort(TIMESTAMPPROPERTY, SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    PreparedQuery results = this.datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       // Get each comment and add to memory
       String comment = (String)entity.getProperty(RAWTEXTPROPERTY);
-      comments.add(comment);
+      this.comments.add(comment);
     }
 
     // Send json of queried data to front end.
-    String json = getJSONString(comments);
+    String json = getJSONString(this.comments);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
-  /** Change object to a json string. */
-  private String getJSONString(Object object) {
-    Gson gson = new Gson();
-    String json = gson.toJson(object);
-    return json;
-  }
-
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get input from user.
     String commentInput = getParameter(request, TEXTINPUT, DEFAULTVALUE);
     long timestamp = System.currentTimeMillis();
@@ -85,18 +79,18 @@ public class DataServlet extends HttpServlet {
       Entity commentEntity = new Entity(COMMENTPATH);
       commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
       commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
-      datastore.put(commentEntity);
+      this.datastore.put(commentEntity);
     }
-    
+
     // Get how many comments the user wants.
     String commentCountString = getParameter(request, COMMENTCOUNT, DEFAULTVALUE);
 
     // Error check integer parsing. If not a number, change to default
     try {
-      commentCount = Integer.parseInt(commentCountString);
+      this.commentCount = Integer.parseInt(commentCountString);
     } catch (NumberFormatException e) {
-      System.err.println("Could not convert to int: " + commentCount);
-      commentCount = DEFAULTCOMMENTCOUNT;
+      System.err.println("Could not convert to int: " + this.commentCount);
+      this.commentCount = DEFAULTCOMMENTCOUNT;
     }
 
     // Redirect to greeting page.
@@ -114,5 +108,5 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
-  } 
+  }
 }

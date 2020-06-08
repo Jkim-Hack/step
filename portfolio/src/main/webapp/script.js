@@ -41,16 +41,16 @@ async function listAllComments() {
 
     // Cant display less than 1 comment
     if(length < 1) return;
-    
+
     // Put each comment into a list element
     var currentHTML = "";
     for (var comment of commentsList) {
-      
+
       // Check for html injection
       while (comment.includes("<") || comment.includes(">")) {
         comment = comment.replace(/</, "&lt;").replace(/>/, "&gt;");
-      } 
-      
+      }
+
       let listElement = "<div id=\"comment\">" + "<p>" + comment + "</p>" + "</div>";
       currentHTML += listElement;
     }
@@ -62,17 +62,25 @@ async function listAllComments() {
 /**
  * Deletes every comment.
  */
-async function deleteAllComments() { 
+async function deleteAllComments() {
   // Wait for response
   const response = await fetch('/delete-data', {method: 'POST'});
 }
 
-function redirectToGreeting() {
-  window.location.href = "/greeting.html";
+function redirectTo(link) {
+  window.location.href = link;
 }
 
 async function handlePurgeCommentsClick() {
   deleteAllComments();
-  redirectToGreeting();
+  redirectTo("/greeting.html");
 }
 
+async function requestLoginAndRedirectToNextPage() {
+
+  // Wait for server response in login servlet and redirect based on whether or not the user is logged in
+  const response = await fetch('/login');
+  await response.json().then(loginInfo => {
+    redirectTo(loginInfo);
+  })
+}
