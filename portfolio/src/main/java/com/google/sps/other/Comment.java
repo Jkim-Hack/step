@@ -19,16 +19,57 @@ import com.google.appengine.api.datastore.Entity;
 import static com.google.sps.other.Constants.*;
 
 public class Comment {
-
+ 
   private String email;
   private String rawText;
   private long timeStamp;
+ 
+  public static class Builder {
 
-  public Comment(String email, String comment, String timeStamp) {
-    this.email = email;
-    this.rawText = comment;
-    this.timeStamp = timeStamp;
+    private String email;
+    private String rawText;
+    private long timeStamp;
+
+    public Builder() {
+      this.email = "";
+      this.rawText = "";
+      this.timeStamp = System.currentTimeMillis();
+    }
+
+    public Builder withEntity(Entity entity) {
+      this.email = (String)entity.getProperty(EMAILPROPERTY);
+      this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY);
+      this.timeStamp = (long)entity.getProperty(TIMESTAMPPROPERTY);
+
+      return this;
+    }
+
+    public Builder withEmail(String email) {
+      this.email = email;
+      return this;
+    }
+
+    public Builder withComment(String comment) {
+      this.rawText = comment;
+      return this;
+    }
+
+    public Builder atTimeStamp(long timeStamp) {
+      this.timeStamp = timeStamp;
+      return this;
+    }
+
+    public Comment build() {
+      Comment comment = new Comment();
+      comment.email = this.email;
+      comment.rawText = this.rawText;
+      comment.timeStamp = this.timeStamp;
+
+      return comment;
+    }
   }
+
+  public Comment() {}
 
   public String getEmail() {
     return this.email;
@@ -41,5 +82,4 @@ public class Comment {
   public long getTimeStamp() {
     return this.timeStamp;
   }
-
 }

@@ -46,14 +46,22 @@ async function listAllComments() {
 
     // Put each comment into a list element
     var currentHTML = "";
-    for (var comment of commentsList) {
+    for (const comment of commentsList) {
+
+      // Parse the json string of each comment object
+      const commentObject = JSON.parse(JSON.stringify(comment));
+      const commentMap = new Map(Object.entries(commentObject));
+
+      // Extract email and text properties
+      var email = commentMap.get("email");
+      var rawText = commentMap.get("rawText");
 
       // Check for html injection
-      while (comment.includes("<") || comment.includes(">")) {
-        comment = comment.replace(/</, "&lt;").replace(/>/, "&gt;");
+      while (rawText.includes("<") || rawText.includes(">")) {
+        rawText = rawText.replace(/</, "&lt;").replace(/>/, "&gt;");
       }
 
-      let listElement = "<div id=\"comment\">" + "<p>" + comment + "</p>" + "</div>";
+      let listElement = "<div id=\"comment\">" + "<p>" + rawText + "</p>" + "</div>";
       currentHTML += listElement;
     }
 

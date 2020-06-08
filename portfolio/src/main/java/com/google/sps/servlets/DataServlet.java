@@ -18,7 +18,6 @@ import static com.google.sps.other.Constants.*;
 import static com.google.sps.other.Common.*;
 
 import com.google.sps.other.Comment;
-import com.google.sps.other.CommentBuilder;
 import com.google.gson.Gson;
 import java.util.List;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = this.datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       // Get each comment and add to memory
-      Comment comment = CommentBuilder()
+      Comment comment = new Comment.Builder()
 	.withEntity(entity)
 	.build();
       this.comments.add(comment);
@@ -87,8 +86,10 @@ public class DataServlet extends HttpServlet {
       String email = this.userService.getCurrentUser().getEmail();
 
       Entity commentEntity = new Entity(COMMENTPATH);
-      Comment comment = new Comment(email, commentInput, timestamp);
-      this.datastore.put(comment);
+      commentEntity.setProperty(EMAILPROPERTY, email);
+      commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
+      commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
+      this.datastore.put(commentEntity);
     }
 
     // Get how many comments the user wants.
