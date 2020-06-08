@@ -61,7 +61,7 @@ async function listAllComments() {
         rawText = rawText.replace(/</, "&lt;").replace(/>/, "&gt;");
       }
 
-      let listElement = "<div id=\"comment\">" + "<p>" + rawText + "</p>" + "</div>";
+      let listElement = "<div id=\"comment\">" + "<p>" + email + "<br><br>" + rawText + "</p>" + "</div>";
       currentHTML += listElement;
     }
 
