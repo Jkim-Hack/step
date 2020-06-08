@@ -47,11 +47,10 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Set default to the greeting page
-    String loginUrl = "/greeting.html";
-    if(!this.userService.isUserLoggedIn()) {
+    String loginUrl = GREETING_URL;
+    if (!this.userService.isUserLoggedIn()) {
       // Change redirect page to the login page
-      String urlToRedirectAfterLogin = "/greeting.html";
-      loginUrl = this.userService.createLoginURL(urlToRedirectAfterLogin);
+      loginUrl = this.userService.createLoginURL(GREETING_URL);
     }
 
     String json = getJSONString(loginUrl);

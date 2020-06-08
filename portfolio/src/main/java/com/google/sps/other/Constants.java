@@ -25,5 +25,8 @@ public final class Constants {
 
   // Timestamp property identifier
   public static final String TIMESTAMPPROPERTY = "timestamp";
+  
+  //Greeting url identifier
+  public static final String GREETING_URL = "/greeting.html";
 
 }
