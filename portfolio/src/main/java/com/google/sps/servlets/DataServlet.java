@@ -17,12 +17,15 @@ package com.google.sps.servlets;
 import static com.google.sps.other.Constants.*;
 import static com.google.sps.other.Common.*;
 
+import com.google.sps.other.Comment;
 import com.google.gson.Gson;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -37,16 +40,18 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<String> comments;
+  private List<Comment> comments;
   private DatastoreService datastore;
   private int commentCount;
+  private UserService userService;
 
   @Override
   public void init() {
-    // Initialize datastore, comment memory, and comment count.
+    // Initialize datastore, comment memory, comment count, and user service.
     this.datastore = DatastoreServiceFactory.getDatastoreService();
     this.comments = new ArrayList<>();
     this.commentCount = DEFAULTCOMMENTCOUNT;
+    this.userService = UserServiceFactory.getUserService();
   }
 
   @Override
@@ -58,7 +63,9 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = this.datastore.prepare(query);
     for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(commentCount))) {
       // Get each comment and add to memory
-      String comment = (String)entity.getProperty(RAWTEXTPROPERTY);
+      Comment comment = new Comment.Builder()
+	.withEntity(entity)
+	.build();
       this.comments.add(comment);
     }
 
@@ -76,7 +83,10 @@ public class DataServlet extends HttpServlet {
 
     // Check if the comment is empty and if not put comment into datastore.
     if (commentInput.length() > 0) {
+      String email = this.userService.getCurrentUser().getEmail();
+
       Entity commentEntity = new Entity(COMMENTPATH);
+      commentEntity.setProperty(EMAILPROPERTY, email);
       commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
       commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
       this.datastore.put(commentEntity);
@@ -94,7 +104,7 @@ public class DataServlet extends HttpServlet {
     }
 
     // Redirect to greeting page.
-    response.sendRedirect("/greeting.html");
+    response.sendRedirect(GREETING_URL);
   }
 
   /**
