@@ -23,6 +23,9 @@ public final class Constants {
   // Raw text property identifier
   public static final String RAWTEXTPROPERTY = "rawText";
 
+  // Image url property identifier
+  public static final String IMAGEURLPROPERTY = "imageUrl";
+
   // Timestamp property identifier
   public static final String TIMESTAMPPROPERTY = "timestamp";
   

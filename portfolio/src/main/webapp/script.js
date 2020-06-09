@@ -14,6 +14,11 @@
 
 const greeting_url = "/greeting.html";
 
+async function listAllCommentsAndFetchBlobUrl() {
+  await fetchBlobUrlAndShowForm(); 
+  listAllComments();
+}
+
 /**
  * Gets comment responses from the server.
  */
@@ -55,13 +60,19 @@ async function listAllComments() {
       // Extract email and text properties
       var email = commentMap.get("email");
       var rawText = commentMap.get("rawText");
+      var imageUrl = commentMap.get("imageUrl");
 
       // Check for html injection
       while (rawText.includes("<") || rawText.includes(">")) {
         rawText = rawText.replace(/</, "&lt;").replace(/>/, "&gt;");
       }
+      
+      var imageElement = ""; 
+      if (imageUrl.toString().length > 0) {
+        imageElement = "<br/><img src=\"" + imageUrl + "\" />";
+      }
 
-      let listElement = "<div id=\"comment\">" + "<p>" + email + "<br><br>" + rawText + "</p>" + "</div>";
+      let listElement = "<div id=\"comment\">" + "<p>" + email + "<br><br/>" + rawText + "</p>" + imageElement + "</div>";
       currentHTML += listElement;
     }
 
@@ -93,4 +104,15 @@ async function requestLoginAndRedirectToNextPage() {
   await response.json().then(loginInfo => {
     redirectTo(loginInfo);
   })
+}
+
+async function fetchBlobUrlAndShowForm() {
+  await fetch('/image-upload-url')
+  	.then((response) => {
+	  return response.text();
+	})
+  	.then((blobUrl) => {
+	  const imageForm = document.getElementById('comment-form');
+	  imageForm.action = blobUrl;
+	});
 }
