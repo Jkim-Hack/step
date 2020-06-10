@@ -22,23 +22,27 @@ public class Comment {
  
   private String email;
   private String rawText;
+  private String imageUrl;
   private long timeStamp;
  
   public static class Builder {
 
     private String email;
     private String rawText;
+    private String imageUrl;
     private long timeStamp;
 
     public Builder() {
       this.email = "";
       this.rawText = "";
+      this.imageUrl = "";
       this.timeStamp = System.currentTimeMillis();
     }
 
     public Builder withEntity(Entity entity) {
       this.email = (String)entity.getProperty(EMAILPROPERTY);
-      this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY);
+      this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY); 
+      this.imageUrl = (String)entity.getProperty(IMAGEURLPROPERTY);
       this.timeStamp = (long)entity.getProperty(TIMESTAMPPROPERTY);
 
       return this;
@@ -54,6 +58,11 @@ public class Comment {
       return this;
     }
 
+    public Builder withImageUrl(String url) {
+      this.imageUrl = url;
+      return this;
+    }
+
     public Builder atTimeStamp(long timeStamp) {
       this.timeStamp = timeStamp;
       return this;
@@ -63,6 +72,7 @@ public class Comment {
       Comment comment = new Comment();
       comment.email = this.email;
       comment.rawText = this.rawText;
+      comment.imageUrl = this.imageUrl;
       comment.timeStamp = this.timeStamp;
 
       return comment;
@@ -77,6 +87,10 @@ public class Comment {
 
   public String getComment() {
     return this.rawText;
+  }
+
+  public String getImageUrl() {
+    return this.imageUrl;
   }
 
   public long getTimeStamp() {
