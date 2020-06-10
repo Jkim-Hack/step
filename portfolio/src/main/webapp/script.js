@@ -12,17 +12,107 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const greeting_url = "/greeting.html";
+
+async function listAllCommentsAndFetchBlobUrl() {
+  await fetchBlobUrlAndShowForm(); 
+  listAllComments();
+}
+
 /**
- * Adds a random greeting to the page.
+ * Gets comment responses from the server.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+async function getAllComments() {
+  let commentsList = new Array();
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  // Wait for server response in data servlet
+  const response = await fetch('/data');
+  await response.json().then(comments => {
+    for(var comment of comments) {
+      // Add each comment into list
+      commentsList.push(comment);
+    }
+  })
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  // Return generated list
+  return commentsList;
+}
+
+/**
+ * Lists every comment the user has inputed.
+ */
+async function listAllComments() {
+    // Get all the comments and put into a list
+    let commentsList = await getAllComments();
+    let length = commentsList.length;
+
+    // Cant display less than 1 comment
+    if(length < 1) return;
+
+    // Put each comment into a list element
+    var currentHTML = "";
+    for (const comment of commentsList) {
+
+      // Parse the json string of each comment object
+      const commentObject = JSON.parse(JSON.stringify(comment));
+      const commentMap = new Map(Object.entries(commentObject));
+
+      // Extract email and text properties
+      var email = commentMap.get("email");
+      var rawText = commentMap.get("rawText");
+      var imageUrl = commentMap.get("imageUrl");
+
+      // Check for html injection
+      while (rawText.includes("<") || rawText.includes(">")) {
+        rawText = rawText.replace(/</, "&lt;").replace(/>/, "&gt;");
+      }
+      
+      var imageElement = ""; 
+      if (imageUrl.toString().length > 0) {
+        imageElement = "<br/><img src=\"" + imageUrl + "\" />";
+      }
+
+      let listElement = "<div id=\"comment\">" + "<p>" + email + "<br><br/>" + rawText + "</p>" + imageElement + "</div>";
+      currentHTML += listElement;
+    }
+
+    // Put each list element into the container
+    document.getElementById('comments-list-container').innerHTML = currentHTML;
+}
+
+/**
+ * Deletes every comment.
+ */
+async function deleteAllComments() {
+  // Wait for response
+  const response = await fetch('/delete-data', {method: 'POST'});
+}
+
+function redirectTo(link) {
+  window.location.href = link;
+}
+
+async function handlePurgeCommentsClick() {
+  deleteAllComments();
+  redirectTo(greeting_url);
+}
+
+async function requestLoginAndRedirectToNextPage() {
+
+  // Wait for server response in login servlet and redirect based on whether or not the user is logged in
+  const response = await fetch('/login');
+  await response.json().then(loginInfo => {
+    redirectTo(loginInfo);
+  })
+}
+
+async function fetchBlobUrlAndShowForm() {
+  await fetch('/image-upload-url')
+  	.then((response) => {
+	  return response.text();
+	})
+  	.then((blobUrl) => {
+	  const imageForm = document.getElementById('comment-form');
+	  imageForm.action = blobUrl;
+	});
 }
