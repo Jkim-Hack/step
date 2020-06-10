@@ -18,10 +18,15 @@ import static com.google.sps.other.Constants.*;
 import static com.google.sps.other.Common.*;
 
 import com.google.sps.other.Comment;
+import com.google.sps.other.AnalyzedSentiment;
 import com.google.gson.Gson;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
@@ -99,12 +104,21 @@ public class DataServlet extends HttpServlet {
 
     // Check if the comment is empty and if not put comment into datastore.
     if (commentInput.length() > 0) {
-      String email = this.userService.getCurrentUser().getEmail();
 
+      Document document = Document.newBuilder().setContent(commentInput).setType(Document.Type.PLAIN_TEXT).build();
+      LanguageServiceClient service = LanguageServiceClient.create();
+      Sentiment sentiment = service.analyzeSentiment(document).getDocumentSentiment();
+      float score = sentiment.getScore();
+      service.close();
+
+      AnalyzedSentiment analyzedSentiment = getOverallSentiment(score);
+
+      String email = this.userService.getCurrentUser().getEmail();
       Entity commentEntity = new Entity(COMMENTPATH);
       commentEntity.setProperty(EMAILPROPERTY, email);
       commentEntity.setProperty(RAWTEXTPROPERTY, commentInput);
       commentEntity.setProperty(IMAGEURLPROPERTY, imageUrl);
+      commentEntity.setProperty(SENTIMENTPROPERTY, analyzedSentiment);
       commentEntity.setProperty(TIMESTAMPPROPERTY, timestamp);
       this.datastore.put(commentEntity);
     }
@@ -168,6 +182,28 @@ public class DataServlet extends HttpServlet {
       return url.getPath();
     } catch (MalformedURLException e) {
       return imagesService.getServingUrl(urlOptions);
+    }
+  }
+
+  /**
+  * Gets overall sentiment score and outputs an AnalyzedSentiment object with the score, processed sentiment string, and color code. 
+  * */
+  private AnalyzedSentiment getOverallSentiment(float score) {
+    
+    if (score >= .8) {
+      return new AnalyzedSentiment(score, "Overwhelmingly Positive", "#00ff00");
+    } else if (score >= .6) {      
+      return new AnalyzedSentiment(score, "Very Positive", "#00ff00");
+    } else if (score >= .4) {
+      return new AnalyzedSentiment(score, "Mostly Positive", "#00cc00");
+    } else if (score >= .2) {
+      return new AnalyzedSentiment(score, "Positive", "#00cc00");
+    } else if (score >= 0) {
+      return new AnalyzedSentiment(score, "Netural", "#8c8c8c");
+    } else if (score < 0) {
+      return new AnalyzedSentiment(score, "Negative", "#cc0000");
+    } else {
+      return new AnalyzedSentiment(score, "Netural", "#8c8c8c");
     }
   }
 }

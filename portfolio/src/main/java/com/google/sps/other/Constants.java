@@ -26,6 +26,9 @@ public final class Constants {
   // Image url property identifier
   public static final String IMAGEURLPROPERTY = "imageUrl";
 
+  // Sentiment property identifier
+  public static final String SENTIMENTPROPERTY = "sentiment";
+
   // Timestamp property identifier
   public static final String TIMESTAMPPROPERTY = "timestamp";
   

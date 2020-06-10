@@ -18,11 +18,13 @@ package com.google.sps.other;
 import com.google.appengine.api.datastore.Entity;
 import static com.google.sps.other.Constants.*;
 
+
 public class Comment {
  
   private String email;
   private String rawText;
   private String imageUrl;
+  private AnalyzedSentiment sentiment;
   private long timeStamp;
  
   public static class Builder {
@@ -30,19 +32,22 @@ public class Comment {
     private String email;
     private String rawText;
     private String imageUrl;
+    private AnalyzedSentiment sentiment;
     private long timeStamp;
 
     public Builder() {
       this.email = "";
       this.rawText = "";
       this.imageUrl = "";
+      this.sentiment = new AnalyzedSentiment(0, "Neutral", "#8c8c8c");
       this.timeStamp = System.currentTimeMillis();
     }
 
     public Builder withEntity(Entity entity) {
       this.email = (String)entity.getProperty(EMAILPROPERTY);
       this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY); 
-      this.imageUrl = (String)entity.getProperty("imageUrl");
+      this.imageUrl = (String)entity.getProperty("imageUrl"); 
+      this.sentiment = (AnalyzedSentiment)entity.getProperty(SENTIMENTPROPERTY);
       this.timeStamp = (long)entity.getProperty(TIMESTAMPPROPERTY);
 
       return this;
