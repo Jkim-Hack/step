@@ -42,7 +42,7 @@ public class Comment {
     public Builder withEntity(Entity entity) {
       this.email = (String)entity.getProperty(EMAILPROPERTY);
       this.rawText = (String)entity.getProperty(RAWTEXTPROPERTY); 
-      this.imageUrl = (String)entity.getProperty("imageUrl");
+      this.imageUrl = (String)entity.getProperty(IMAGEURLPROPERTY);
       this.timeStamp = (long)entity.getProperty(TIMESTAMPPROPERTY);
 
       return this;
