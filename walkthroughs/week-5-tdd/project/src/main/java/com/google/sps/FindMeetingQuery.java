@@ -20,37 +20,59 @@ import java.util.ArrayList;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+    // Initalize the processed result and the not acceptable ranges
     List<TimeRange> result = new ArrayList<>();
     List<TimeRange> ranges = new ArrayList<>();
 
+    // Get meeting duration
     long meetingDuration = request.getDuration();
     
+    // Check edge case where the meeting is the whole day
     if ((int)meetingDuration > TimeRange.WHOLE_DAY.duration())
       return result;
 
+    // Check if theres no events the entire day
     if (events.isEmpty()) {
       result.add(TimeRange.WHOLE_DAY);
       return result;
     }
 
+    // Loop through events and check through combinations of optional and regular attendees
     for (Event event : events) {
       TimeRange when = event.getWhen();
       if (!event.getAttendees().isEmpty() && containsAtLeastOne(request.getAttendees(), event.getAttendees())) {
         ranges.add(when);
+      } else if (request.getAttendees().isEmpty() && containsAtLeastOne(request.getOptionalAttendees(), event.getAttendees())) {
+        ranges.add(when);
+      } else if (containsAtLeastOne(request.getOptionalAttendees(), event.getAttendees())) {
+        ranges.add(when);
       }
     }
 
+    // Remove all optional attendees with unreasonable event times such as the entire day of the duration is less than the meeting duration
+    for (int i = 0; i < ranges.size(); i++){
+      TimeRange elem = ranges.get(i);
+      if (elem.duration() < request.getDuration() || elem.equals(TimeRange.WHOLE_DAY)) {
+        ranges.remove(i);
+        i--;
+      }
+    }
+
+    // Check if the unacceptable range is empty
     if (ranges.isEmpty()) {
       result.add(TimeRange.WHOLE_DAY);
       return result;
     }
 
+    // Sort through the ranges by their start times
     sort(ranges);
-    
+
+    // Get earliest availability and add to result
     int start = getEarliest(ranges);
     if ((long)start >= meetingDuration) 
       result.add(TimeRange.fromStartDuration(0, start));
 
+    // Loop through unacceptable events and add pockets to the result
     for (int i = 0; i < ranges.size() - 1; i++) {
       TimeRange first = ranges.get(i);
       TimeRange second = ranges.get(i+1);
@@ -60,6 +82,7 @@ public final class FindMeetingQuery {
       }
     }
     
+    // Get latest availability and add to result
     int end = getLatest(ranges);
     if (24*60 - (long)end >= meetingDuration)
       result.add(TimeRange.fromStartDuration(end, 24*60 - end));
@@ -67,6 +90,7 @@ public final class FindMeetingQuery {
     return result;
   }
 
+  // Insertion sort through time range list
   private void sort(List<TimeRange> list) {
     int n = list.size(); 
     for (int i = 1; i < n; i++) { 
@@ -81,6 +105,7 @@ public final class FindMeetingQuery {
     } 
   }
 
+  // If theres at least one element in collection a that is in collection b
   private boolean containsAtLeastOne(Collection<String> a, Collection<String> b) {
     if (a.isEmpty() || b.isEmpty())
       return false;
@@ -91,6 +116,7 @@ public final class FindMeetingQuery {
     return false;
   }
 
+  // Get the earliest start in the time range
   private int getEarliest(List<TimeRange> range) {
     int min = range.get(0).start();
     for (int i = 1; i < range.size(); i++) {
@@ -100,6 +126,7 @@ public final class FindMeetingQuery {
     return min;
   }
 
+  // Get the latest end in the time range
   private int getLatest(List<TimeRange> range) {
     int max = range.get(0).end();
     for (int i = 1; i < range.size(); i++) {
