@@ -27,7 +27,7 @@ public final class FindMeetingQuery {
     // Get meeting duration
     long meetingDuration = request.getDuration();
     
-    // Check edge case where the meeting is the whole day
+    // Check when the meeting is greater than the whole day and return an empty result
     if ((int)meetingDuration > TimeRange.WHOLE_DAY.duration()) {
       return availableRanges;
     }
@@ -47,10 +47,19 @@ public final class FindMeetingQuery {
       boolean currentEventContainsAtLeastOneOptionalAttendeeInRequest = containsAtLeastOne(request.getOptionalAttendees(), event.getAttendees());
       boolean isRequestAttendeesEmpty = request.getAttendees().isEmpty();
       
+      // If the current event has no attendees (including optional) and
+      // the event doesn't have any attendees from the event AND in the request, then dont add to range. 
       if (!isCurrentEventAttendeesEmpty && currentEventContainsAtLeastOneAttendeeInRequest) {
         unacceptableRanges.add(currentWhen);
+        
+        // If the second boolean check above fails while the first doesn't, then check if the request has no mandatory
+        // attendees and if there's at least one optional attendee in the request. If both are true, add their time ranges 
+        // to unacceptableRanges. Basically, act as if optional attendees are mandatory attendees now.
       } else if (isRequestAttendeesEmpty && currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         unacceptableRanges.add(currentWhen);
+        
+        // In order to find the most optimal time for both mandatory and optional attendees, we add optional attendees
+        // and act as if they're mandatory, so we add their time ranges to the unacceptableRanges
       } else if (currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         unacceptableRanges.add(currentWhen);
       }
@@ -84,7 +93,7 @@ public final class FindMeetingQuery {
     for (int i = 0; i < unacceptableRanges.size() - 1; i++) {
       TimeRange currentRange = unacceptableRanges.get(i);
       TimeRange nextRange = unacceptableRanges.get(i+1);
-      if (!first.overlaps(second)) {
+      if (!currentRange.overlaps(nextRange)) {
         int timeBetweenRanges = nextRange.start() - currentRange.end();
         if (timeBetweenRanges >= meetingDuration)
           availableRanges.add(TimeRange.fromStartDuration(currentRange.end(), timeBetweenRanges));
@@ -92,11 +101,11 @@ public final class FindMeetingQuery {
     }
     
     // Get latest availability and add to result
-    int end = getLatestTimeRangeFromStart(availableRanges);
+    int end = getLatestTimeRangeFromStart(unacceptableRanges);
     int dayDuration = 24 * 60;
-    int timeBetweenLastandEndDay = dayDuration - end;
-    if (timeBetweenLastandEndDay >= (int)meetingDuration) {
-      availableRanges.add(TimeRange.fromStartDuration(end, timeBetweenLastandEndDay));
+    int timeAvailableUntilEndOfDay = dayDuration - end;
+    if (timeAvailableUntilEndOfDay >= (int)meetingDuration) {
+      availableRanges.add(TimeRange.fromStartDuration(end, timeAvailableUntilEndOfDay));
     }
 
     return availableRanges;
