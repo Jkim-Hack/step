@@ -47,20 +47,18 @@ public final class FindMeetingQuery {
       boolean currentEventContainsAtLeastOneOptionalAttendeeInRequest = containsAtLeastOne(request.getOptionalAttendees(), event.getAttendees());
       boolean isRequestAttendeesEmpty = request.getAttendees().isEmpty();
       
-      // If the current event has no attendees (including optional) and
-      // the event doesn't have any attendees from the event AND in the request, then dont add to range. 
       if (!isCurrentEventAttendeesEmpty && currentEventContainsAtLeastOneAttendeeInRequest) {
+        // If the current event has no attendees (including optional) and
+        // the event doesn't have any attendees from the event AND in the request, then dont add to range. 
         unacceptableRanges.add(currentWhen);
-        
+      } else if (isRequestAttendeesEmpty && currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         // If the second boolean check above fails while the first doesn't, then check if the request has no mandatory
         // attendees and if there's at least one optional attendee in the request. If both are true, add their time ranges 
         // to unacceptableRanges. Basically, act as if optional attendees are mandatory attendees now.
-      } else if (isRequestAttendeesEmpty && currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         unacceptableRanges.add(currentWhen);
-        
+      } else if (currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         // In order to find the most optimal time for both mandatory and optional attendees, we add optional attendees
         // and act as if they're mandatory, so we add their time ranges to the unacceptableRanges
-      } else if (currentEventContainsAtLeastOneOptionalAttendeeInRequest) {
         unacceptableRanges.add(currentWhen);
       }
     }
